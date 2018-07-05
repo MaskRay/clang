@@ -38,6 +38,7 @@ struct IndexingOptions {
   SystemSymbolFilterKind SystemSymbolFilter
     = SystemSymbolFilterKind::DeclarationsOnly;
   bool IndexFunctionLocals = false;
+  bool IndexImplicitInstantiation = false;
 };
 
 /// \param WrappedAction another frontend action to wrap over or null.
