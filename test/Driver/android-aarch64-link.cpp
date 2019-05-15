@@ -16,7 +16,13 @@
 // RUN:   -### -v %s 2> %t
 // RUN: FileCheck -check-prefix=MAX-PAGE-SIZE < %t %s
 //
+// RUN: %clang -target aarch64-linux-android -### %s 2>&1 | \
+// RUN:   FileCheck --implicit-check-not=--android-tls /dev/null
+// RUN: %clang -target aarch64-linux-android -fuse-ld=lld -### %s 2>&1 | \
+// RUN:   FileCheck --check-prefix=TLS %s
+//
 // GENERIC-ARM: --fix-cortex-a53-843419
 // CORTEX-A53: --fix-cortex-a53-843419
 // CORTEX-A57-NOT: --fix-cortex-a53-843419
 // MAX-PAGE-SIZE: max-page-size=4096
+// TLS: --android-tls

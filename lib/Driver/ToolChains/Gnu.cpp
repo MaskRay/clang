@@ -390,10 +390,22 @@ void tools::gnutools::Linker::ConstructJob(Compilation &C, const JobAction &JA,
       CmdArgs.push_back("--fix-cortex-a53-843419");
   }
 
-  // Android does not allow shared text relocations. Emit a warning if the
-  // user's code contains any.
-  if (isAndroid)
-      CmdArgs.push_back("--warn-shared-textrel");
+  if (isAndroid) {
+    // Android does not allow shared text relocations. Emit a warning if the
+    // user's code contains any.
+    CmdArgs.push_back("--warn-shared-textrel");
+
+    // FIXME In lld, --android-tls is a temporary option that makes its TLS
+    // layout compatible with Android Bionic on ARM/AArch64. Delete once the
+    // reservation of extra TLS slots is done in a proper layer (e.g.
+    // crtbegin_{dynamic,static}.o).
+    if (Triple.isARM() || Triple.isAArch64()) {
+      const char *Exec = Args.MakeArgString(ToolChain.GetLinkerPath());
+      if (llvm::sys::path::filename(Exec).equals_lower("ld.lld") ||
+          llvm::sys::path::stem(Exec).equals_lower("ld.lld"))
+        CmdArgs.push_back("--android-tls");
+    }
+  }
 
   for (const auto &Opt : ToolChain.ExtraOpts)
     CmdArgs.push_back(Opt.c_str());
