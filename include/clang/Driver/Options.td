@@ -2647,6 +2647,9 @@ def shared : Flag<["-", "--"], "shared">;
 def single__module : Flag<["-"], "single_module">;
 def specs_EQ : Joined<["-", "--"], "specs=">;
 def specs : Separate<["-", "--"], "specs">, Flags<[Unsupported]>;
+def static_EQ : CommaJoined<["-"], "static=">,
+                MetaVarName<"<component>">,
+                HelpText<"Link in specified components statically">;
 def static_libgcc : Flag<["-"], "static-libgcc">;
 def static_libstdcxx : Flag<["-"], "static-libstdc++">;
 def static : Flag<["-", "--"], "static">, Flags<[NoArgumentUnused]>;

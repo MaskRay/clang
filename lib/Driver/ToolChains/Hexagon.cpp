@@ -218,7 +218,6 @@ constructHexagonLinkArgs(Compilation &C, const JobAction &JA,
   Args.ClaimAllArgs(options::OPT_emit_llvm);
   Args.ClaimAllArgs(options::OPT_w); // Other warning options are already
                                      // handled somewhere else.
-  Args.ClaimAllArgs(options::OPT_static_libgcc);
 
   //----------------------------------------------------------------------------
   //

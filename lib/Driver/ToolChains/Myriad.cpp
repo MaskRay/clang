@@ -144,7 +144,6 @@ void tools::Myriad::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // Eat some arguments that may be present but have no effect.
   Args.ClaimAllArgs(options::OPT_g_Group);
   Args.ClaimAllArgs(options::OPT_w);
-  Args.ClaimAllArgs(options::OPT_static_libgcc);
 
   if (Args.hasArg(options::OPT_s)) // Pass the 'strip' option.
     CmdArgs.push_back("-s");

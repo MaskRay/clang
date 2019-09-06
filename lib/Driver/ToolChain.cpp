@@ -84,6 +84,28 @@ ToolChain::ToolChain(const Driver &D, const llvm::Triple &T,
   std::string CandidateLibPath = getArchSpecificLibPath();
   if (getVFS().exists(CandidateLibPath))
     getFilePaths().push_back(CandidateLibPath);
+
+  std::vector<StringRef> Libs;
+  for (const Arg *A : Args.filtered(options::OPT_static_EQ)) {
+    A->claim();
+    for (StringRef C : A->getValues()) {
+      if (C == "c++stdlib")
+        StaticLibs.insert(LT_cxxstdlib);
+      else if (C == "rtlib")
+        StaticLibs.insert(LT_rtlib);
+      else
+        D.Diag(diag::err_drv_unsupported_option_argument)
+            << A->getOption().getName() << C;
+    }
+  }
+
+  if (Args.hasArg(options::OPT_static))
+    for (LibType L : {LT_cxxstdlib, LT_rtlib})
+      StaticLibs.insert(L);
+  if (Args.hasArg(options::OPT_static_libstdcxx))
+    StaticLibs.insert(LT_cxxstdlib);
+  if (Args.hasArg(options::OPT_static_libgcc))
+    StaticLibs.insert(LT_rtlib);
 }
 
 void ToolChain::setTripleEnvironment(llvm::Triple::EnvironmentType Env) {

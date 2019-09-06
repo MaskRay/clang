@@ -33,6 +33,10 @@
 // RUN:     | FileCheck %s -check-prefix=CHECK-STDLIB
 // CHECK-STDLIB: error: invalid library name in argument '-stdlib=libstdc++'
 
+// RUN: %clangxx %s -### --target=x86_64-unknown-fuchsia -static=c++stdlib \
+// RUN:     -fuse-ld=lld 2>&1 \
+// RUN:     | FileCheck %s -check-prefix=CHECK-STATIC
+
 // RUN: %clangxx %s -### --target=x86_64-unknown-fuchsia -static-libstdc++ \
 // RUN:     -fuse-ld=lld 2>&1 \
 // RUN:     | FileCheck %s -check-prefix=CHECK-STATIC

@@ -134,7 +134,7 @@ void nacltools::Linker::ConstructJob(Compilation &C, const JobAction &JA,
       !Args.hasArg(options::OPT_nostdlib, options::OPT_nodefaultlibs)) {
     if (ToolChain.ShouldLinkCXXStdlib(Args)) {
       bool OnlyLibstdcxxStatic =
-          Args.hasArg(options::OPT_static_libstdcxx) && !IsStatic;
+          ToolChain.linksStaticLib(ToolChain::LT_cxxstdlib) && !IsStatic;
       if (OnlyLibstdcxxStatic)
         CmdArgs.push_back("-Bstatic");
       ToolChain.AddCXXStdlibLibArgs(Args, CmdArgs);

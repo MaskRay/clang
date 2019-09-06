@@ -65,8 +65,7 @@ void tools::MinGW::Linker::AddLibGCC(const ArgList &Args,
   // Make use of compiler-rt if --rtlib option is used
   ToolChain::RuntimeLibType RLT = getToolChain().GetRuntimeLibType(Args);
   if (RLT == ToolChain::RLT_Libgcc) {
-    bool Static = Args.hasArg(options::OPT_static_libgcc) ||
-                  Args.hasArg(options::OPT_static);
+    bool Static = getToolChain().linksStaticLib(ToolChain::LT_rtlib);
     bool Shared = Args.hasArg(options::OPT_shared);
     bool CXX = getToolChain().getDriver().CCCIsCXX();
 
@@ -191,12 +190,12 @@ void tools::MinGW::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // TODO: Add profile stuff here
 
   if (TC.ShouldLinkCXXStdlib(Args)) {
-    bool OnlyLibstdcxxStatic = Args.hasArg(options::OPT_static_libstdcxx) &&
-                               !Args.hasArg(options::OPT_static);
-    if (OnlyLibstdcxxStatic)
+    bool StaticCXXStdlib = TC.linksStaticLib(ToolChain::LT_cxxstdlib) &&
+                           !Args.hasArg(options::OPT_static);
+    if (StaticCXXStdlib)
       CmdArgs.push_back("-Bstatic");
     TC.AddCXXStdlibLibArgs(Args, CmdArgs);
-    if (OnlyLibstdcxxStatic)
+    if (StaticCXXStdlib)
       CmdArgs.push_back("-Bdynamic");
   }
 

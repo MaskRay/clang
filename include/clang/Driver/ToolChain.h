@@ -17,6 +17,7 @@
 #include "clang/Driver/Multilib.h"
 #include "clang/Driver/Types.h"
 #include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Triple.h"
@@ -105,6 +106,11 @@ public:
     UNW_Libgcc
   };
 
+  enum LibType {
+    LT_cxxstdlib,
+    LT_rtlib,
+  };
+
   enum RTTIMode {
     RM_Enabled,
     RM_Disabled,
@@ -146,6 +152,7 @@ private:
 
   mutable std::unique_ptr<SanitizerArgs> SanitizerArguments;
   mutable std::unique_ptr<XRayArgs> XRayArguments;
+  mutable llvm::DenseSet<int> StaticLibs;
 
   /// The effective clang triple for the current Job.
   mutable llvm::Triple EffectiveTriple;
@@ -241,6 +248,8 @@ public:
   const SanitizerArgs& getSanitizerArgs() const;
 
   const XRayArgs& getXRayArgs() const;
+
+  bool linksStaticLib(LibType Lib) const { return StaticLibs.count(Lib); }
 
   // Returns the Arg * that explicitly turned on/off rtti, or nullptr.
   const llvm::opt::Arg *getRTTIArg() const { return CachedRTTIArg; }

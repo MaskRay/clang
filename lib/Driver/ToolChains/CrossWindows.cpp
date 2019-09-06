@@ -167,12 +167,12 @@ void tools::CrossWindows::Linker::ConstructJob(
   AddLinkerInputs(TC, Inputs, Args, CmdArgs, JA);
 
   if (TC.ShouldLinkCXXStdlib(Args)) {
-    bool StaticCXX = Args.hasArg(options::OPT_static_libstdcxx) &&
-                     !Args.hasArg(options::OPT_static);
-    if (StaticCXX)
+    bool StaticCXXStdlib = TC.linksStaticLib(ToolChain::LT_cxxstdlib) &&
+                           !Args.hasArg(options::OPT_static);
+    if (StaticCXXStdlib)
       CmdArgs.push_back("-Bstatic");
     TC.AddCXXStdlibLibArgs(Args, CmdArgs);
-    if (StaticCXX)
+    if (StaticCXXStdlib)
       CmdArgs.push_back("-Bdynamic");
   }
 
